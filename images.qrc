@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>Cyberpunk 2077 (C) 2020 by CD Projekt RED 2023_4_14 21_21_47.png</file>
+    </qresource>
+</RCC>
