@@ -52,7 +52,7 @@ private slots:
     void on_listWidget_doubleClicked(const QModelIndex& index);
 
 protected:
-    void resizeEvent(QResizeEvent* event);
+    void  resizeEvent(QResizeEvent* event);  // 重新设置播放窗口大小
     void keyPressEvent(QKeyEvent* e);
     void mousePressEvent(QMouseEvent* e);
     void mouseDoubleClickEvent(QMouseEvent* e);

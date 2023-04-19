@@ -116,7 +116,6 @@ void  Widget::resizeEvent(QResizeEvent* event)
 
 void Widget::on_btn_fullshow_clicked()//全屏
 {
-
     showMaximized();
 }
 
