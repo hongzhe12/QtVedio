@@ -1,3 +1,16 @@
 <RCC>
-    <qresource prefix="/new/prefix1"/>
+    <qresource prefix="/new/icon"/>
+    <qresource prefix="/">
+        <file>play.png</file>
+        <file>24gf-fullScreenEnter.png</file>
+        <file>24gf-nextCircle.png</file>
+        <file>24gf-previousCircle.png</file>
+        <file>open.png</file>
+        <file>pause.png</file>
+        <file>progress.png</file>
+        <file>voice.png</file>
+        <file>gap.png</file>
+        <file>list.png</file>
+        <file>player.png</file>
+    </qresource>
 </RCC>
