@@ -1,5 +1,4 @@
 <RCC>
-    <qresource prefix="/new/icon"/>
     <qresource prefix="/">
         <file>play.png</file>
         <file>24gf-fullScreenEnter.png</file>
@@ -12,5 +11,6 @@
         <file>gap.png</file>
         <file>list.png</file>
         <file>player.png</file>
+        <file>myappico.ico</file>
     </qresource>
 </RCC>

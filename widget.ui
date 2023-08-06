@@ -49,7 +49,6 @@
             <font>
              <family>宋体</family>
              <pointsize>20</pointsize>
-             <weight>50</weight>
              <italic>false</italic>
              <bold>false</bold>
             </font>
@@ -58,7 +57,7 @@
             <string notr="true">image: url(:/voice.png);</string>
            </property>
            <property name="text">
-            <string>   </string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -103,7 +102,6 @@
            <property name="font">
             <font>
              <pointsize>15</pointsize>
-             <weight>50</weight>
              <bold>false</bold>
             </font>
            </property>
@@ -111,7 +109,7 @@
             <string notr="true">image: url(:/progress.png);</string>
            </property>
            <property name="text">
-            <string>   </string>
+            <string/>
            </property>
           </widget>
          </item>
@@ -219,32 +217,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btn_stop">
-           <property name="styleSheet">
-            <string notr="true">border:None;</string>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="icon">
-            <iconset resource="images.qrc">
-             <normaloff>:/pause.png</normaloff>:/pause.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>40</width>
-             <height>40</height>
-            </size>
-           </property>
-           <property name="checkable">
-            <bool>true</bool>
-           </property>
-           <property name="autoExclusive">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="btn_fullshow">
            <property name="text">
             <string/>
@@ -280,7 +252,6 @@
         <widget class="QLabel" name="label_5">
          <property name="font">
           <font>
-           <weight>75</weight>
            <italic>false</italic>
            <bold>true</bold>
           </font>

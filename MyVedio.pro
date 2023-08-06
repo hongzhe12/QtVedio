@@ -17,12 +17,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    globalkeyfilter.cpp \
     main.cpp \
     myslider.cpp \
     widget.cpp
 
 HEADERS += \
+    globalkeyfilter.h \
     myslider.h \
+    ui_widget.h \
     widget.h
 
 FORMS += \
@@ -35,6 +38,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     images.qrc
+
+RC_ICONS = myappico.ico
+
 
 
 

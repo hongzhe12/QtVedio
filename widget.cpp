@@ -1,4 +1,5 @@
 #include "widget.h"
+#include "globalkeyfilter.h"
 #include "ui_widget.h"
 #include "myslider.h"
 
@@ -7,7 +8,6 @@ Widget::Widget(QWidget* parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    //    setWindowTitle("");
     move(400, 60);
     m_pMediaPlayer = new QMediaPlayer;//播放器
     m_pVideoWidget = new QVideoWidget(ui->label);//创建播放窗口
@@ -19,17 +19,6 @@ Widget::Widget(QWidget* parent) :
     m_pMediaPlayer->setVideoOutput(m_pVideoWidget);
 
     //设置焦点 为了让键盘事件能生效  你也可设置播放窗口一直获得焦点
-    ui->btn_open->setFocusPolicy(Qt::NoFocus);
-    ui->btn_fullshow->setFocusPolicy(Qt::NoFocus);
-    ui->btn_ht->setFocusPolicy(Qt::NoFocus);
-    ui->btn_qj->setFocusPolicy(Qt::NoFocus);
-    ui->btn_stop->setFocusPolicy(Qt::NoFocus);
-    ui->btn_start->setFocusPolicy(Qt::NoFocus);
-    ui->label->setFocusPolicy(Qt::NoFocus);
-    ui->label_all_time->setFocusPolicy(Qt::NoFocus);
-    ui->label_ct->setFocusPolicy(Qt::NoFocus);
-    ui->progress_report->setFocusPolicy(Qt::NoFocus);
-    ui->voice_control->setFocusPolicy(Qt::NoFocus);
 
     //滑块连接
     m_sliderstate = false;//初始化滑块状态
@@ -53,6 +42,13 @@ Widget::Widget(QWidget* parent) :
         qDebug() << "鼠标在滑块上松开" << val;
     });
 
+
+    // 创建全局键盘事件过滤器
+    GlobalKeyFilter* globalKeyFilter = new GlobalKeyFilter(this);
+
+    // 安装全局键盘事件过滤器
+    QAbstractEventDispatcher* eventDispatcher = QAbstractEventDispatcher::instance();
+    eventDispatcher->installNativeEventFilter(globalKeyFilter);
 }
 
 Widget::~Widget()
@@ -81,6 +77,7 @@ void Widget::on_btn_open_clicked()
     }
 
     m_pVideoWidget->resize(ui->label->size());//设置播放窗口大小
+
     m_state = QMediaPlayer::PlayingState;
     m_pMediaPlayer->play();//播放
     connect(m_pMediaPlayer, SIGNAL(durationChanged(qint64)),
@@ -92,79 +89,35 @@ void Widget::on_btn_open_clicked()
             SLOT(getposition(qint64)));//当前时长
 }
 
-void Widget::on_btn_start_clicked()  //播放
+void Widget::on_btn_start_clicked()  // 播放键槽函数
 {
-    m_state = QMediaPlayer::PlayingState;
-    m_pMediaPlayer->play();
+    if(m_state == QMediaPlayer::PausedState)
+    {
+        m_state = QMediaPlayer::PlayingState;
+        m_pMediaPlayer->play();
+        ui->btn_start->setIcon(QIcon(":/pause.png")); // 更新图标为暂停图标
+    }
+    else if(m_state == QMediaPlayer::PlayingState)
+    {
+        m_state = QMediaPlayer::PausedState;
+        m_pMediaPlayer->pause();
+        ui->btn_start->setIcon(QIcon(":/play.png")); // 更新图标为播放图标
+    }
+
 }
 
-void Widget::on_btn_stop_clicked()//暂停
-{
-    m_state = QMediaPlayer::PausedState;
-    m_pMediaPlayer->pause();
-}
 
 void Widget::on_voice_control_valueChanged(int value)//设置声音
 {
     m_pMediaPlayer->setVolume(value);
 }
 
-void  Widget::resizeEvent(QResizeEvent* event)
-{
-    m_pVideoWidget->resize(ui->label->size());//设置播放窗口大小
-}
 
 void Widget::on_btn_fullshow_clicked()//全屏
 {
-    showMaximized();
+    m_pVideoWidget->setFullScreen(true);
 }
 
-
-void Widget::keyPressEvent(QKeyEvent* e)//键盘控制暂停和窗口还原
-{
-    if(Qt::Key_Escape == e->key())
-    {
-        resize(930, 710);
-        move(400, 60);
-    }
-
-    if(Qt::Key_Space == e->key())
-    {
-        if(m_state == QMediaPlayer::PlayingState)
-        {
-            m_state = QMediaPlayer::PausedState;
-            m_pMediaPlayer->pause();
-        }
-        else if(m_state == QMediaPlayer::PausedState)
-        {
-            m_state = QMediaPlayer::PlayingState;
-            m_pMediaPlayer->play();
-        }
-    }
-}
-void Widget::mouseDoubleClickEvent(QMouseEvent* e)//鼠标双击事件
-{
-    showMaximized();//最大化
-}
-
-void Widget::mousePressEvent(QMouseEvent* e)//鼠标控制播放状态
-{
-    if(Qt::LeftButton == e->button())
-    {
-        if(m_state == QMediaPlayer::PausedState)
-        {
-            m_state = QMediaPlayer::PlayingState;
-            m_pMediaPlayer->play();
-        }
-        else if(m_state == QMediaPlayer::PlayingState)
-        {
-            m_state = QMediaPlayer::PausedState;
-            m_pMediaPlayer->pause();
-        }
-    }
-
-
-}
 
 void Widget::getduration(qint64 playtime)//总时长槽
 {
@@ -184,7 +137,6 @@ void Widget::setget_Alltime(qint64 playtime)//获取视频总时长并设置到�
     m_hour = playtime / 3600;
     m_munete = (playtime - m_hour * 3600) / 60;
     m_second = playtime - m_hour * 3600 - m_munete * 60;
-    //qDebug()<<m_hour<<m_munete<<m_second;
     QString str = QString("%1:%2:%3").arg(m_hour).arg(m_munete).arg(m_second);
     ui->label_all_time->setText(str);
 }
@@ -198,7 +150,6 @@ void Widget::setget_currenttime(qint64 playtime)//获取当时播放位置并设
     h = playtime / 3600;
     m = (playtime - h * 3600) / 60;
     s = playtime - h * 3600 - m * 60;
-    //qDebug()<<h<<m<<s;
     QString str = QString("%1:%2:%3").arg(h).arg(m).arg(s);
     ui->label_ct->setText(str);
 }
@@ -252,5 +203,26 @@ void Widget::on_listWidget_doubleClicked(const QModelIndex& index)
     int i = index.row();//获取选中行
     m_MediaPlaylist->setCurrentIndex(i);//将播放列表中的当前行换为list中选中的行
     m_pMediaPlayer->play();
+}
+
+// 退出全屏
+void Widget::exitFullScreen()
+{
+    m_pVideoWidget->setFullScreen(false);
+    m_pVideoWidget->resize(ui->label->size());
+}
+
+void Widget::togglePlayback()
+{
+    if (m_state == QMediaPlayer::PlayingState)
+    {
+        m_state = QMediaPlayer::PausedState;
+        m_pMediaPlayer->pause();
+    }
+    else if (m_state == QMediaPlayer::PausedState)
+    {
+        m_state = QMediaPlayer::PlayingState;
+        m_pMediaPlayer->play();
+    }
 }
 

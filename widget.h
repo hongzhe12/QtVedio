@@ -13,11 +13,19 @@
 #include <QKeyEvent>
 #include <QListWidgetItem>
 #include <QObject>
+#include <QAbstractEventDispatcher>
+
+// 前向声明 GlobalKeyFilter 类
+class GlobalKeyFilter;
 
 namespace Ui
 {
 class Widget;
 }
+
+class QMediaPlayer;
+class QMediaPlaylist;
+class QVideoWidget;
 
 class Widget : public QWidget
 {
@@ -28,14 +36,15 @@ public:
     void setget_Alltime(qint64 playtime);//获取视频时长并设置到标签
     void setget_currenttime(qint64 playtime);//获取当时播放位置并设置
     void settimeslider(qint64 playtime);//设置进度条
+    void exitFullScreen();  // 退出全屏
+    void togglePlayback();  // 暂停/播放
+
     ~Widget();
 
 private slots:
     void on_btn_open_clicked();//打开音视频
 
     void on_btn_start_clicked();//播放
-
-    void on_btn_stop_clicked();//暂停
 
     void on_voice_control_valueChanged(int value);//控制声音
 
@@ -51,11 +60,8 @@ private slots:
 
     void on_listWidget_doubleClicked(const QModelIndex& index);
 
-protected:
-    void  resizeEvent(QResizeEvent* event);  // 重新设置播放窗口大小
-    void keyPressEvent(QKeyEvent* e);
-    void mousePressEvent(QMouseEvent* e);
-    void mouseDoubleClickEvent(QMouseEvent* e);
+
+
 private:
     Ui::Widget* ui;
     QStringList         m_strlist;          //文件名列表
@@ -68,6 +74,8 @@ private:
     int m_second;                           //秒
     bool m_sliderstate;                     //滑块是否被选中的状态
     int m_slider_crtval;                    //滑块当前值
+
+    GlobalKeyFilter* m_globalKeyFilter;     // 在这里使用前向声明的 GlobalKeyFilter 类
 };
 
 #endif // WIDGET_H
